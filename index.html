@@ -20,32 +20,48 @@
       <section id="monster" class="container">
         <h2>Monster Health</h2>
         <div class="healthbar">
-          <div
-            class="healthbar__value"
-            :style="{width: monsterHealth + '%'}"
-          ></div>
+          <div class="healthbar__value" :style="monsterBar"></div>
         </div>
       </section>
       <section id="player" class="container">
         <h2>Your Health</h2>
         <div class="healthbar">
-          <div
-            class="healthbar__value"
-            :style="{width: playerHealth + '%'}"
-          ></div>
+          <div class="healthbar__value" :style="playerBar"></div>
         </div>
       </section>
-      <section id="controls">
+      <section class="container" v-if="winner">
+        <h2>Game Over!</h2>
+        <h3 v-if="winner==='monster'">You lost!</h3>
+        <h3 v-else-if="winner==='player'">You win!</h3>
+        <h3 v-else>Draw!</h3>
+        <button @click="startGame">Start New Game</button>
+      </section>
+      <section id="controls" v-else>
         <button @click="handleAttackMonster">ATTACK</button>
         <button :disabled="allowSpecial" @click="handleSpecialAttackMonster">
           SPECIAL ATTACK
         </button>
-        <button>HEAL</button>
-        <button>SURRENDER</button>
+        <button @click="handleHeal">HEAL</button>
+        <button @click="handleSurrender">SURRENDER</button>
       </section>
       <section id="log" class="container">
         <h2>Battle Log</h2>
-        <ul></ul>
+        <ul>
+          <li v-for="msg in logMsgs">
+            <span
+              :class="{'log--player':msg.actionBy === 'player','log--monster':msg.actionBy === 'monster'}"
+              >{{msg.actionBy==='player' ? 'Player ' : 'Monster '}}</span
+            >
+            <span v-if="msg.type === 'heal'"
+              >heals himself for
+              <span class="log--heal">{{msg.actionValue}}</span></span
+            >
+            <span v-else
+              >attacks and deals
+              <span class="log---damage">{{msg.actionValue}}</span></span
+            >
+          </li>
+        </ul>
       </section>
     </div>
   </body>

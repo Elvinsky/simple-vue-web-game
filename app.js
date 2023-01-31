@@ -8,6 +8,7 @@ const app = Vue.createApp({
       playerHealth: HEALTH,
       monsterHealth: HEALTH,
       round: 0,
+      specialRoundUsed: 0,
     };
   },
   methods: {
@@ -23,9 +24,21 @@ const app = Vue.createApp({
     },
     handleSpecialAttackMonster() {
       this.round++;
+      this.specialRoundUsed = this.round;
       const dmg = controlRandom(10, 25);
       this.monsterHealth -= dmg;
       this.handleAttackPlayer();
+    },
+    handleHeal() {
+      this.round++;
+      const heal = controlRandom(6, 18);
+      this.playerHealth += heal;
+      this.handleAttackPlayer();
+    },
+  },
+  computed: {
+    allowSpecial() {
+      return this.round - this.specialRoundUsed < 3;
     },
   },
 });
